@@ -16,7 +16,7 @@ env:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v4
@@ -35,12 +35,12 @@ jobs:
           npm run test --if-present
           popd
 
-      - name: Zip artifact for deployment
-        run: |
-          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/${{ env.PACKAGE_PATH }}'
-          Compress-Archive -Path . -Destination release.zip
-          popd
-          cp ./${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/${{ env.PACKAGE_PATH }}/release.zip ./release.zip
+#      - name: Zip artifact for deployment
+#        run: |
+#          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/${{ env.PACKAGE_PATH }}'
+#          Compress-Archive -Path . -Destination release.zip
+#          popd
+#          cp ./${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/${{ env.PACKAGE_PATH }}/release.zip ./release.zip
           
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -63,10 +63,10 @@ jobs:
         with:
           name: node-app
           
-      - name: Unzip artifact from build job
-        run: |
-          Expand-Archive -Path release.zip -DestinationPath .
-          del release.zip
+#      - name: Unzip artifact from build job
+#        run: |
+#          Expand-Archive -Path release.zip -DestinationPath .
+#          del release.zip
       
       - name: Login to Azure
         uses: azure/login@v2
@@ -82,4 +82,3 @@ jobs:
           app-name: 'global-unique-frog'
           slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          
